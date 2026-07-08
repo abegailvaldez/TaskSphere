@@ -1,5 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
 
 function Register() {
   return (
@@ -29,6 +30,11 @@ function Register() {
 
             <button type="submit">Register</button>
           </form>
+
+          <p className="form-link">
+            Already have an account?{" "}
+            <Link to="/login">Login here</Link>
+          </p>
         </section>
       </main>
 

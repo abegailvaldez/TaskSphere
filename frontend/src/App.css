@@ -200,3 +200,19 @@ footer {
 .form-card button:hover {
   background: #1d4ed8;
 }
+
+.form-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #475569;
+}
+
+.form-link a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-link a:hover {
+  text-decoration: underline;
+}
