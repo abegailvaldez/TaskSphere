@@ -1,8 +1,55 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Login() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const [message, setMessage] = useState("");
+
+  function handleChange(event) {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("token", data.token);
+        setMessage("Login successful.");
+        navigate("/dashboard");
+      } else {
+        setMessage(data.error || "Login failed.");
+      }
+    } catch {
+      setMessage("Unable to connect to the backend API.");
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -10,15 +57,20 @@ function Login() {
       <main className="form-page">
         <section className="form-card">
           <h1>Welcome Back</h1>
-
           <p>Sign in to access your TaskSphere account.</p>
 
-          <form>
+          {message && <p className="form-message">{message}</p>}
+
+          <form onSubmit={handleSubmit}>
             <label>
-              Email
+              Username
               <input
-                type="email"
-                placeholder="Enter your email"
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={handleChange}
+                required
               />
             </label>
 
@@ -26,7 +78,11 @@ function Login() {
               Password
               <input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                required
               />
             </label>
 
@@ -34,8 +90,7 @@ function Login() {
           </form>
 
           <p className="form-link">
-            Don't have an account?{" "}
-            <Link to="/register">Register here</Link>
+            Don&apos;t have an account? <Link to="/register">Register here</Link>
           </p>
         </section>
       </main>
