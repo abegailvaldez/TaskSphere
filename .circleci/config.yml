@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  docker-build:
+    docker:
+      - image: cimg/base:stable
+
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          docker_layer_caching: false
+
+      - run:
+          name: Build backend Docker image
+          command: docker build -t tasksphere-backend ./backend
+
+      - run:
+          name: Build frontend Docker image
+          command: docker build -t tasksphere-frontend ./frontend
+
+      - run:
+          name: Validate Docker Compose
+          command: docker compose config
+
+      - run:
+          name: List Docker images
+          command: docker images
+
+workflows:
+  build-and-test:
+    jobs:
+      - docker-build
